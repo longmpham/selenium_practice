@@ -2,12 +2,12 @@
     ways to get objects.
     By ID                   driver.find_element_by_id
     By Class Name           driver.find_element_by_class_name
-    By Tag Name             driver.find_elements_by_tag_name
-    By Name                 driver.find_elements_by_name
-    By Link Text            driver.find_elements_by_link_text
+    By Tag Name             driver.find_element_by_tag_name
+    By Name                 driver.find_element_by_name
+    By Link Text            driver.find_element_by_link_text
     By Partial Link Text    driver.find_element_by_partial_link_text
     By CSS                  driver.find_element_by_css_selector
-    By XPath                driver.find_elements_by_xpath
+    By XPath                driver.find_element_by_xpath
 
 """
 
@@ -30,11 +30,18 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--incognito")
 chrome_options.add_experimental_option("detach", True)
 
+# house keeping stuff
 url = 'https://www.imgur.com'
 search_term = 'pepe'
+file_dir = 'D:/Pictures/' + search_term
+
+
+# create directory if not already there.
+if not os.path.exists(file_dir):
+    os.makedirs(file_dir)
 
 """ you can paste path of webdriver here """    
-# driver = webdriver.Chrome()  # Optional argument, if not specified will search path.
+# driver = webdriver.Chrome(<LOCATION OF WEBDRIVER>)  # Optional argument, if not specified will search path.
 driver = webdriver.Chrome(chrome_options=chrome_options) # enables incognito
 driver.set_window_size(1080,640)
 wait = WebDriverWait(driver,20)
@@ -77,16 +84,14 @@ for image in images:
     img_arr.append(img)
     print(img)
 
-# create directory if not already there.
-if not os.path.exists(search_term):
-    os.makedirs(search_term)
+
 
 # save images
 
 for i in range(len(img_arr)):
     # urllib.urlretrieve(img_arr[i], (i + '_' + pepe + '.png'))
     print('saving:', i + 1)
-    req.urlretrieve(img_arr[i], ('./' + search_term + '/' + str(i) + '.png'))
+    req.urlretrieve(img_arr[i], (file_dir + '/' + str(i) + '.png'))
     # filename = '../' + str(i) + '_' + search_term + '.png'
     # with req.urlopen(img_arr[i]) as img, open(fname, 'wb') as opfile:
     #     data = img.read()
