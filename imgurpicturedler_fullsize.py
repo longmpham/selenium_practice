@@ -13,7 +13,9 @@
 
 
 import time
-from selenium import webdriver 
+from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 # import pandas as pd 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support.ui import WebDriverWait 
@@ -34,24 +36,54 @@ chrome_options.add_experimental_option("detach", True)
 # house keeping stuff
 url = 'https://www.imgur.com'
 search_term = 'pepe'
-file_dir = 'D:/Pictures/' + search_term
+file_dir = './Pictures/' + search_term
+
+"""
+    FILL IN YOUR USERNAME AND PASSWORD FOR IMGUR. YOU CANNOT SEARCH WITHOUT IT!
+"""
+my_username = ''
+my_pw = ''
 
 
 # create directory if not already there.
 if not os.path.exists(file_dir):
     os.makedirs(file_dir)
 
-""" you can paste path of webdriver here """    
-# driver = webdriver.Chrome(<LOCATION OF WEBDRIVER>)  # Optional argument, if not specified will search path.
-driver = webdriver.Chrome(chrome_options=chrome_options) # enables incognito
+
+"""
+    ===========SELECT YOUR DRIVER===========
+    if you have a docker image and ready, just paste it below for the first driver. 
+    Otherwise, use local webdriver and comment out the first driver.
+"""
+driver = webdriver.Remote("http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME)
+# driver = webdriver.Chrome(chrome_options=chrome_options) # enables incognito
+
 driver.set_window_size(1080,640)
-wait = WebDriverWait(driver,20)
+# wait = WebDriverWait(driver,20)
 driver.get(url); # this grabs your url link!
 
 # driver.execute_script("window.scrollTo(0, 200)") 
 
-# search = driver.find_elements_by_class_name('Searchbar-textInput')
-# search = wait.until(EC.element_to_be_clickable((By.CLASS_NAME,"Searchbar-textInput"))).click()
+
+# Need to sign in for imgur now for some reason... =/
+signin = driver.find_element_by_class_name('Navbar-signin')
+signin.click()
+
+time.sleep(1)
+
+# delete before PUSH!!!!
+
+username = driver.find_element_by_name('username')
+username.click()
+username.send_keys(my_username)
+pw = driver.find_element_by_name('password')
+pw.click()
+pw.send_keys(my_pw)
+submit = driver.find_element_by_name('submit')
+submit.click()
+
+time.sleep(5)
+
 search = driver.find_element_by_class_name('Searchbar-textInput')
 search.click()
 search.send_keys(search_term)
@@ -127,13 +159,13 @@ for i in range(num_of_images):
         print(item)
 
     # get image by clicking next post
-    next_post = driver.find_element_by_class_name('next-prev')
+    next_post = driver.find_element_by_class_name('navNext')
     next_post.click()
 
-print(img_arr)
+for img in img_arr:
+    print(img)
 
 # save images
-
 for i in range(len(img_arr)):
     # urllib.urlretrieve(img_arr[i], (i + '_' + pepe + '.png'))
     print('saving:', i + 1)
